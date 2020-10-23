@@ -11,6 +11,7 @@ import {
     updateMessage,
     updateMessageWithError,
     updateMessageWithSessionOver,
+    movePlayersToGeneralChannel
 } from "./actions";
 import {
     EMOTE_IDS_TO_COLOR,
@@ -210,6 +211,8 @@ class SessionRunner {
         console.log(`[+] Session ${this.session.id} disconnected from Among Us`);
 
         await this.session.channels.init();
+
+        movePlayersToGeneralChannel(this.bot, this.session);
         for (const channel of this.session.channels) {
             await this.bot.deleteChannel(channel.channelId, "Among Us: Session is over.").catch(() => {});
         }

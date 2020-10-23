@@ -8,6 +8,7 @@ exports.up = knex =>
         table.specificType("state", "text").notNullable();
         table.specificType("region", "text").notNullable();
         table.specificType("lobby_code", "text").notNullable();
+        table.specificType("general_voice_channel", "text").notNullable();
     });
 
 exports.down = knex => knex.schema.dropTableIfExists("among_us_session");
