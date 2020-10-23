@@ -67,6 +67,12 @@ export default class AmongUsSession {
     groupImpostors!: boolean;
 
     /**
+     * The general voice channel to move players of ending sessions to.
+     */
+    @Property()
+    generalVoiceChannel!: string;
+
+    /**
      * The channels created by this session.
      */
     @OneToMany(() => SessionChannel, channel => channel.session)

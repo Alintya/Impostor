@@ -63,6 +63,8 @@ export async function createEmptyNewSession(
     session.region = region;
     session.lobbyCode = code;
     session.groupImpostors = false;
+    session.generalVoiceChannel = msg.member!.voiceState.channelID || '';
+
     await orm.em.persist(session);
     await orm.em.flush();
 
@@ -113,6 +115,23 @@ async function moveAllPlayers(bot: eris.Client, session: AmongUsSession, idFrom:
                 .catch(() => {})
         )
     );
+}
+
+/**
+ * Moves all players currently in the silence channels of the given
+ * among us session to the relevant talking channel.
+ */
+export async function movePlayersToGeneralChannel(bot: eris.Client, session: AmongUsSession) {
+    await session.channels.init();
+
+    const channels = bot.guilds.find(x => x.id == session.guild)!.channels;
+
+    if (session.generalVoiceChannel.length <= 0 || !channels.some(x => x.id == session.generalVoiceChannel && x.type == 2))
+    {
+        return;
+    }
+
+    await Promise.all(session.channels.getItems().map(x => moveAllPlayers(bot, session, x.channelId, session.generalVoiceChannel)));
 }
 
 /**
